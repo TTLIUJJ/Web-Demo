@@ -3,6 +3,8 @@ package com.ackerman.dao;
 import com.ackerman.model.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * @Author: Ackerman
@@ -18,4 +20,14 @@ public interface UserDao {
     @Insert({"INSERT INTO ", TABLE, "(" + INSERT_FIELDS + ")",
             "VALUES(#{username}, #{password}, #{salt}, #{headImageUrl})"})
     public int addUser(User user);
+
+    @Select({"SELECT id FROM ", TABLE, " WHERE username = #{username}"})
+    public int getIdByUsername(String username);
+
+    @Select({"SELECT ", SELECT_FIELDS, " FROM ", TABLE, " WHERE id = #{id}"})
+    public User getUserById(int id);
+
+    @Select({"SELECT", SELECT_FIELDS, " FROM ", TABLE, " WHERE username = #{username} AND password = #{password}"})
+    public User getUserViaLogin(@Param("username") String username,
+                             @Param("password") String password);
 }

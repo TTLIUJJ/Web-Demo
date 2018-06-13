@@ -1,8 +1,10 @@
 package com.ackerman.dao;
 
 import com.ackerman.model.News;
+import com.ackerman.model.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * @Author: Ackerman
@@ -18,5 +20,6 @@ public interface NewsDao {
     @Insert({"INSERT INTO ", TABLE, "(" , INSERT_FIELDS, ")",
             "VALUES(#{type}, #{userId}, #{likeCount}, #{commentCount}, #{title}, #{link}, #{imageLink}, #{createDate})"})
     public int addNews(News news);
+
 
 }

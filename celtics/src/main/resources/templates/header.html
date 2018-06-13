@@ -1,14 +1,14 @@
 <nav class="navbar navbar-default navbar-static-top">
     <div class="container">
         <div class="navbar-header">
-            <span class="navbar-brand">XMU</span>
+            <span class="navbar-brand">XMU2号</span>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li id="navActive" value="$!{navActive}"></li>
-                <li><a href="/popular">热门</a></li>
+                <li><a href="/index">热门$!{global}</a></li>
                 <li><a href="/news">最新</a></li>
-                <li><a href="/seckillArgs">秒杀系统</a></li>
+                <li><a href="http://127.0.0.1:1234/ssoIndex?global=$!{global}" target="_blank" >点击跳转秒杀模块</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
@@ -16,10 +16,13 @@
                 <li><a href="/share?type=6">原创</a></li>
                 <li><a href="/share?type=3">链接</a></li>
 
-
-                <li><a href="/individual/index"><strong>登录者者的昵称</strong></a></li>
-                <li><a href="/login">登陆</a></li>
-                <li><a href="/register">注册</a></li>
+                #if($user)
+                    <li><a href="/individual/index"><strong>$!{user.username}</strong></a></li>
+                    <li><a href="/logout">注销登录</a></li>
+                #else
+                    <li><a href="/login">登陆</a></li>
+                    <li><a href="/register">注册</a></li>
+                #end
             </ul>
         </div>
     </div>

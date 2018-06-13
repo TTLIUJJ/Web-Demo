@@ -4,6 +4,8 @@ import com.ackerman.dao.NewsDao;
 import com.ackerman.dao.UserDao;
 import com.ackerman.model.News;
 import com.ackerman.model.User;
+import com.ackerman.service.SSOService;
+import com.ackerman.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,12 @@ public class CelticsApplicationTest {
 
     @Autowired
     private NewsDao newsDao;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SSOService ssoService;
 
     @Test
     public void testUser(){
@@ -53,4 +61,16 @@ public class CelticsApplicationTest {
 
         System.out.println("insert news:" + newsDao.addNews(news));
     }
+
+    @Test
+    public void testCluster(){
+        userService.login("liujiajing", "hahaha" );
+    }
+
+
+    @Test
+    public void testDubbo(){
+        ssoService.say("aaaaaaa");
+    }
+
 }

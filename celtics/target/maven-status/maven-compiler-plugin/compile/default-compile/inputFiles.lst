@@ -1,0 +1,10 @@
+/home/ackerman/github/celtics/celtics/src/main/java/com/ackerman/model/User.java
+/home/ackerman/github/celtics/celtics/src/main/java/com/ackerman/controller/UserController.java
+/home/ackerman/github/celtics/celtics/src/main/java/com/ackerman/model/News.java
+/home/ackerman/github/celtics/celtics/src/main/java/com/ackerman/controller/SeckillController.java
+/home/ackerman/github/celtics/celtics/src/main/java/com/ackerman/controller/IndexController.java
+/home/ackerman/github/celtics/celtics/src/main/java/com/ackerman/CelticsApplication.java
+/home/ackerman/github/celtics/celtics/src/main/java/com/ackerman/dao/UserDao.java
+/home/ackerman/github/celtics/celtics/src/main/java/com/ackerman/service/UserService.java
+/home/ackerman/github/celtics/celtics/src/main/java/com/ackerman/utils/JedisUtil.java
+/home/ackerman/github/celtics/celtics/src/main/java/com/ackerman/dao/NewsDao.java

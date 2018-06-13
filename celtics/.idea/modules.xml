@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/celtics.iml" filepath="$PROJECT_DIR$/celtics.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sso/src/main/main.iml" filepath="$PROJECT_DIR$/sso/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/impl/src/main/main1.iml" filepath="$PROJECT_DIR$/impl/src/main/main1.iml" />
     </modules>
   </component>
 </project>

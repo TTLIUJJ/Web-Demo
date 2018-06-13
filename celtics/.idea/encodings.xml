@@ -2,5 +2,12 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/impl" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/impl" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/impl" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/provider" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sso" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sso" charset="UTF-8" />
   </component>
 </project>
