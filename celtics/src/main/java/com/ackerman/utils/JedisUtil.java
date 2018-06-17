@@ -3,12 +3,12 @@ package com.ackerman.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.*;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.PriorityQueue;
 
 /**
  * @Author: Ackerman
@@ -28,6 +28,8 @@ public class JedisUtil {
         set.add(new HostAndPort("127.0.0.1", 9000));
         jedisCluster = new JedisCluster(set);
     }
+
+    public static final String HOT_NEWS_KEY = "hot-news";
 
     public void _setex(String key, int seconds, String val){
         try{
@@ -53,4 +55,64 @@ public class JedisUtil {
             logger.error("jedisCluster.del()", e);
         }
     }
+
+    /*
+    ---------------------------------------------------------------------------------------
+     */
+
+    public void del(String key){
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            jedis.del(key);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(jedis != null)
+                jedis.close();
+        }
+    }
+
+
+    public void rpush(String key,String val){
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            jedis.rpush(key, val);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(jedis != null)
+                jedis.close();
+        }
+    }
+
+    public long llen(String key){
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            return jedis.llen(key);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(jedis != null)
+                jedis.close();
+        }
+        return 0;
+    }
+
+    public String lindex(String key, long index){
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            return jedis.lindex(key, index);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(jedis != null)
+                jedis.close();
+        }
+        return null;
+    }
+
 }

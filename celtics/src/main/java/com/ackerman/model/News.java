@@ -8,15 +8,17 @@ import java.util.Date;
  * @Date: Created in 下午5:00 18-6-4
  */
 public class News {
-    private int id;
-    private int type;
-    private int userId;
-    private int likeCount;
-    private int commentCount;
-    private String title;
-    private String link;
-    private String imageLink;
-    private Date createDate;
+    private int id;             //新闻的序号
+    private int type;           //1原创  2转载
+    private int userId;         //创建人
+    private int likeCount;      //点赞数
+    private int commentCount;   //评论数
+    private String title;       //新闻标题
+    private String link;        //原创为null, 转载为新闻转接链接
+    private String imageLink;   //图片链接,
+    private Date createDate;    //发表日期
+
+    private long score;          //计算热门新闻的分数, 排序所需
 
     public int getId() {
         return id;
@@ -90,5 +92,25 @@ public class News {
         this.createDate = createDate;
     }
 
+    public long getScore() {
+        return score;
+    }
+
+    public void setScore(long score) {
+        this.score = score;
+    }
+
+    public String toString(){
+        return "[id=" + id + ", " +
+                "type=" + type + ", " +
+                "userId=" + userId + ", " +
+                "likeCount=" + likeCount + ", " +
+                "commentCount=" + commentCount + ", " +
+                "title=" + title + ", " +
+                "link=" + link + ", " +
+                "imageLink=" + imageLink + ", " +
+                "createDate=" + createDate.toString() +
+                "score=" + score + "]";
+    }
 }
 

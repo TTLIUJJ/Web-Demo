@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class IndexController {
 
-    @RequestMapping(path = {"/index"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public String index(){
-        return "index";
-    }
+
+
 
     @RequestMapping(path = "/seckill", method = {RequestMethod.GET, RequestMethod.POST})
     public String seckill(){

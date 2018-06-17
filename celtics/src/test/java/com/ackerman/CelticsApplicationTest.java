@@ -14,6 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Date;
+import java.util.Random;
 
 /**
  * @Author: Ackerman
@@ -49,17 +50,21 @@ public class CelticsApplicationTest {
 
     @Test
     public void testNews(){
-        News news = new News();
-        news.setType(2);
-        news.setUserId(5);
-        news.setLikeCount(11);
-        news.setCommentCount(20);
-        news.setTitle("hahahah");
-        news.setLink("www.ackerman.com");
-        news.setImageLink("www.tupian.com");
-        news.setCreateDate(new Date());
+        Random random = new Random(47);
+        for(int i = 0; i < 20; ++i){
+            News news = new News();
+            news.setType((i + random.nextInt(17)) % 2);
+            news.setUserId(1 + random.nextInt(10));
+            news.setLikeCount(random.nextInt(100) + 30);
+            news.setCommentCount(random.nextInt(30));
+            news.setTitle("titile-" + i);
+            news.setLink("www.ackerman.com" + i);
+            news.setImageLink("www.tupian.com" + i);
+            long time = System.currentTimeMillis();
+            news.setCreateDate(new Date(time -  + 1000*60*60 * i));
 
-        System.out.println("insert news:" + newsDao.addNews(news));
+            newsDao.addNews(news);
+        }
     }
 
     @Test
@@ -67,10 +72,5 @@ public class CelticsApplicationTest {
         userService.login("liujiajing", "hahaha" );
     }
 
-
-    @Test
-    public void testDubbo(){
-        ssoService.say("aaaaaaa");
-    }
 
 }

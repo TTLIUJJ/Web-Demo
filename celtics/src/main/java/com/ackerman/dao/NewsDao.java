@@ -4,7 +4,10 @@ import com.ackerman.model.News;
 import com.ackerman.model.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @Author: Ackerman
@@ -21,5 +24,10 @@ public interface NewsDao {
             "VALUES(#{type}, #{userId}, #{likeCount}, #{commentCount}, #{title}, #{link}, #{imageLink}, #{createDate})"})
     public int addNews(News news);
 
+    @Select({"SELECT ", SELECT_FIELDS, " FROM ", TABLE, " WHERE id = #{id}"})
+    public News getNewsById(int id);
 
+    @Select({"SELECT ", SELECT_FIELDS, " FROM ", TABLE, " LIMIT #{offset}, #{limit}"})
+    public List<News> getNewsByOffsetAndLimit(@Param("offset") int offset,
+                                              @Param("limit") int limit);
 }

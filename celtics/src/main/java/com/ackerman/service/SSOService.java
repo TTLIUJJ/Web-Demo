@@ -139,5 +139,4 @@ public class SSOService {
     public UserModel getUserModelByToken(String type, String token){
         return getUserModelByTticket(type, token);
     }
-
 }
