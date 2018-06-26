@@ -6,15 +6,15 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li id="navActive" value="$!{navActive}"></li>
-                <li><a href="/index">热门$!{global}</a></li>
-                <li><a href="/news">最新</a></li>
-                <li><a href="http://127.0.0.1:1234/ssoIndex?global=$!{global}" target="_blank" >点击跳转秒杀模块</a></li>
+                <li><a href="/hot">热门</a></li>
+                <li><a href="/index">最新</a></li>
+                <li><a href="http://127.0.0.1:1234/ssoIndex?global=$!{global}" target="_blank">点击跳转秒杀模块</a></li>
+                <!--<li><a href="/seckill" target="_blank">2</a></li>-->
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
 
-                <li><a href="/share?type=6">原创</a></li>
-                <li><a href="/share?type=3">链接</a></li>
+                <li><a href="/publish">发帖</a></li>
 
                 #if($user)
                     <li><a href="/individual/index"><strong>$!{user.username}</strong></a></li>

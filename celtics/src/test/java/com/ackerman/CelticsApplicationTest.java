@@ -3,9 +3,7 @@ package com.ackerman;
 import com.ackerman.dao.NewsDao;
 import com.ackerman.dao.UserDao;
 import com.ackerman.model.News;
-import com.ackerman.model.User;
 import com.ackerman.service.SSOService;
-import com.ackerman.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +29,13 @@ public class CelticsApplicationTest {
     @Autowired
     private NewsDao newsDao;
 
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private SSOService ssoService;
 
     @Test
     public void testUser(){
-        User user = new User();
+        UserModel user = new UserModel();
         user.setUsername("hello");
         user.setPassword("shit");
         user.setSalt("salt");
@@ -58,7 +54,7 @@ public class CelticsApplicationTest {
             news.setLikeCount(random.nextInt(100) + 30);
             news.setCommentCount(random.nextInt(30));
             news.setTitle("titile-" + i);
-            news.setLink("www.ackerman.com" + i);
+            news.setContent("www.ackerman.com" + i);
             news.setImageLink("www.tupian.com" + i);
             long time = System.currentTimeMillis();
             news.setCreateDate(new Date(time -  + 1000*60*60 * i));
@@ -66,11 +62,5 @@ public class CelticsApplicationTest {
             newsDao.addNews(news);
         }
     }
-
-    @Test
-    public void testCluster(){
-        userService.login("liujiajing", "hahaha" );
-    }
-
 
 }

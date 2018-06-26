@@ -115,4 +115,59 @@ public class JedisUtil {
         return null;
     }
 
+    public long scard(String key){
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            return jedis.scard(key);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(jedis != null)
+                jedis.close();
+        }
+        return 0;
+    }
+
+    public long sadd(String key, String val){
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            return jedis.sadd(key, val);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(jedis != null)
+                jedis.close();
+        }
+        return 0;
+    }
+
+    public long srem(String key, String val){
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            return jedis.srem(key, val);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(jedis != null)
+                jedis.close();
+        }
+        return 0;
+    }
+
+    public boolean sismember(String key, String val){
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            return jedis.sismember(key, val);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(jedis != null)
+                jedis.close();
+        }
+        return false;
+    }
 }

@@ -17,7 +17,7 @@ CREATE TABLE `news`(
   `like_count` INT(11) DEFAULT 0,
   `comment_count` INT(11) DEFAULT 0,
   `title` VARCHAR(256) NOT NULL,
-  `link` TEXT,
+  `content` TEXT,
   `image_link` VARCHAR(256),
   `create_date` DATETIME NOT NULL,
   PRIMARY KEY(`id`)

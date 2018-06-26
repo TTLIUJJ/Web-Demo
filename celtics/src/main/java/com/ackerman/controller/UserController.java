@@ -1,22 +1,22 @@
 package com.ackerman.controller;
 
+import com.ackerman.Common;
 import com.ackerman.UserModel;
-import com.ackerman.model.User;
+import com.ackerman.service.MailService;
 import com.ackerman.service.SSOService;
-import com.ackerman.service.UserService;
-import com.ackerman.utils.HostHolder;
+import com.ackerman.utils.KafkaUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * @Author: Ackerman
@@ -28,49 +28,79 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private SSOService ssoService;
 
+    @Autowired
+    private MailService mailService;
 
 
-    @RequestMapping(path = "/doRegister", method = RequestMethod.POST)
+    @RequestMapping(path = "/doRegister", method = {RequestMethod.POST})
     public String doRegister(@RequestParam("username") String username,
                              @RequestParam("password") String password,
                              @RequestParam(value = "remember", defaultValue = "0") int remember,
+                             HttpServletRequest request,
                              HttpServletResponse response){
         //remember = 1代表记住登录
+        try {
+            UserModel user = ssoService.register(request, response, username, password);
 
-        int id = userService.register(username, password);
-        if(id != 0 && remember == 1){
-            userService.addCookie(response, id);
+            if(user != null){
+                //注册成功, 发送邮件, 异步操作, 往kafka消息队列增加消息
+                mailService.sendRegisterMessage(user);
+
+                if (remember == 1) {
+                    ssoService.autoLogin(response, user.getId());
+                }
+            }
+
+        }catch (Exception e){
+            logger.error("注册失败", e);
         }
 
-        return "index";
+        return "forward:/index";
     }
 
-    @RequestMapping(path = "/doLogin", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(path = "/doLogin", method = {RequestMethod.POST})
     public String doLogin(@RequestParam("username") String username,
                           @RequestParam("password") String password,
                           @RequestParam(value = "remember", defaultValue = "0") int remember,
-                          HttpServletRequest request){
+                          HttpServletRequest request,
+                          HttpServletResponse response){
 
-//        int id = userService.login(username, password);
-//
-//        if(id != 0 && remember == 1){
-//            userService.addCookie(response, id);
-//        }
+        try {
+            UserModel user = ssoService.loginViaPassword(request, response, username, password);
+            if (remember == 1) {
+                ssoService.autoLogin(response, user.getId());
+            }
+        }catch (Exception e){
+            logger.error("账号密码登录异常", e);
+        }
 
-        UserModel userModel = ssoService.loginViaPassword(request, username, password);
-
-        return "index";
+        return "forward:/index";
     }
 
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
     public String logout(HttpServletRequest request){
-        userService.logout(request);
 
-        return "redirect:index";
+        ssoService.logoffTicket(request);
+
+        return "redirect:/index";
+    }
+
+
+    @RequestMapping(path = "/register_verify", method = RequestMethod.GET)
+    public String registerVerify(@RequestParam(value = "ticket", defaultValue = "0") String ticket,
+                                  Model model){
+
+        //TODO 获取注册验证码, 并且进行验证
+        String key = "msg";
+
+        if(ssoService.verifyOneTimeTicket(ticket)) {
+            model.addAttribute(key, "认证成功");
+        } else{
+            model.addAttribute(key, "认证失败（验证码失效）");
+        }
+        return "verified";
+
     }
 }

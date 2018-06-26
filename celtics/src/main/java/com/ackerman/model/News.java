@@ -14,7 +14,7 @@ public class News {
     private int likeCount;      //点赞数
     private int commentCount;   //评论数
     private String title;       //新闻标题
-    private String link;        //原创为null, 转载为新闻转接链接
+    private String content;        //原创为内容, 转载为新闻转接链接
     private String imageLink;   //图片链接,
     private Date createDate;    //发表日期
 
@@ -60,12 +60,12 @@ public class News {
         this.title = title;
     }
 
-    public String getLink() {
-        return link;
+    public String getContent() {
+        return content;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getImageLink() {
@@ -107,7 +107,7 @@ public class News {
                 "likeCount=" + likeCount + ", " +
                 "commentCount=" + commentCount + ", " +
                 "title=" + title + ", " +
-                "link=" + link + ", " +
+                "content=" + content + ", " +
                 "imageLink=" + imageLink + ", " +
                 "createDate=" + createDate.toString() +
                 "score=" + score + "]";

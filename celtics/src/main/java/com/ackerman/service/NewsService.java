@@ -1,8 +1,11 @@
 package com.ackerman.service;
 
+import com.ackerman.UserModel;
 import com.ackerman.dao.NewsDao;
 import com.ackerman.model.News;
+import com.ackerman.utils.Entity;
 import com.ackerman.utils.JedisUtil;
+import com.ackerman.utils.LocalInfo;
 import com.ackerman.utils.MasterUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,12 +34,40 @@ public class NewsService implements InitializingBean{
     @Autowired
     private NewsDao newsDao;
 
+    @Autowired
+    private SSOService ssoService;
+
+    @Autowired
+    private LocalInfo localInfo;
+
     public List<News> getNewsByOffsetAndLimit(int offset, int limit){
         return newsDao.getNewsByOffsetAndLimit(offset, limit);
     }
 
     public News getNewsById(int id){
         return newsDao.getNewsById(id);
+    }
+
+    public News addNews(int userId, String title, String content, String imageUrl){
+        try{
+            News news = new News();
+            news.setUserId(userId);
+            news.setTitle(title);
+            news.setContent(content);
+            news.setCreateDate(new Date());
+            if(imageUrl.equals("")){
+                //设置默认图片
+                news.setImageLink("http://oz15aje2y.bkt.clouddn.com/b402d0f985e64470a33a954ee400cb17.jpg");
+            }else {
+                news.setImageLink(imageUrl);
+            }
+            newsDao.addNews(news);
+
+            return news;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -91,7 +122,8 @@ public class NewsService implements InitializingBean{
     //　点赞数, 评论数越多, 创建时间越短, 分值越高
     public void caculateScore(News news){
         try{
-            long likeScore = news.getLikeCount()*7;
+            String likeKey = Entity.getNewsAttitudeKey(news.getId(), Entity.LKIE_KEY);
+            long likeScore = jedisUtil.scard(likeKey)*7;
             long commentScore = news.getCommentCount()*11;
             long createTime = (System.currentTimeMillis() - news.getCreateDate().getTime()) / (1000 * 60 * 10);
             createTime = createTime == 0 ? 1 : createTime;
@@ -102,18 +134,60 @@ public class NewsService implements InitializingBean{
         }
     }
 
+    /**
+    * @Description: attitude 1:喜欢   -1:不喜欢
+    * @Date: 下午3:01 18-6-17
+    */
+    public long updateAttitudeOnNews(int newsId, int attitude){
+        UserModel user = localInfo.getUser();
+        String userId = String.valueOf(user.getId());
+        String likeKey = Entity.getNewsAttitudeKey(newsId, Entity.LKIE_KEY);
+        String dislikeKey = Entity.getNewsAttitudeKey(newsId, Entity.DISLKE_KEY);
+
+        if(attitude == 1){
+            if(jedisUtil.sismember(dislikeKey, userId))
+                jedisUtil.srem(dislikeKey, userId);
+
+            if(jedisUtil.sismember(likeKey, userId))
+                jedisUtil.srem(likeKey, userId);
+            else
+                jedisUtil.sadd(likeKey, userId);
+        }
+        else if(attitude == -1){
+            if(jedisUtil.sismember(likeKey, userId))
+                jedisUtil.srem(likeKey, userId);
+
+            if(jedisUtil.sismember(dislikeKey, userId))
+                jedisUtil.srem(dislikeKey, userId);
+            else
+                jedisUtil.sadd(dislikeKey, userId);
+        }
+
+        return jedisUtil.scard(likeKey) - jedisUtil.scard(dislikeKey);
+    }
+
+
+    public long getNewsLikeCount(int newsId){
+        String likeKey = Entity.getNewsAttitudeKey(newsId, Entity.LKIE_KEY);
+        String dislikeKey = Entity.getNewsAttitudeKey(newsId, Entity.DISLKE_KEY);
+
+        return jedisUtil.scard(likeKey) - jedisUtil.scard(dislikeKey);
+    }
+
+
     @Override
     public void afterPropertiesSet() throws Exception {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 initHotNews();
+
                 Random random = new Random(47);
                 masterUtil.start();
 
                 while (true){
                     long sleepMills = masterUtil.waitForMillseconds();
-                    System.out.println("睡眠时间: " + sleepMills);
+//                    System.out.println("睡眠时间: " + sleepMills);
                     try {
                         TimeUnit.MILLISECONDS.sleep(sleepMills);
 

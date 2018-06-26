@@ -1,9 +1,9 @@
 package com.ackerman.service;
 
+import com.ackerman.UserModel;
 import com.ackerman.dao.UserDao;
-import com.ackerman.model.User;
-import com.ackerman.utils.HostHolder;
 import com.ackerman.utils.JedisUtil;
+import com.ackerman.utils.LocalInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,21 +32,15 @@ public class UserService {
     private JedisUtil jedisUtil;
 
     @Autowired
-    private HostHolder hostHolder;
+    private LocalInfo localInfo;
 
-    public User getUserById(int id){
-        try{
-            return userDao.getUserById(id);
-        }catch (Exception e){
-            logger.info("getUserById()", e);
-        }
-        return null;
-    }
+    @Autowired
+    private SSOService ssoService;
 
     public int register(String username, String password){
         int id = -1;
         try{
-            User user = new User();
+            UserModel user = new UserModel();
             user.setUsername(username);
             user.setPassword(password);
             user.setSalt("aaaaa");
@@ -55,7 +49,7 @@ public class UserService {
 
             //此时的user才有id
             user = userDao.getUserViaLogin(username, password);
-            hostHolder.setUser(user);
+            localInfo.setUser(user);
 
             return userDao.getIdByUsername(username);
         }catch (Exception e){
@@ -68,11 +62,11 @@ public class UserService {
     public int login(String username, String password){
         int id = -1;
         try{
-            User user = userDao.getUserViaLogin(username, password);
+            UserModel user = userDao.getUserViaLogin(username, password);
             if(user == null)
                 return id;
             id = user.getId();
-            hostHolder.setUser(user);
+            localInfo.setUser(user);
         }catch (Exception e){
             logger.error("用户登陆异常", e);
         }
@@ -119,8 +113,8 @@ public class UserService {
         return token;
     }
 
-    public User parseUserFromToken(String token){
-        User user = null;
+    public UserModel parseUserFromToken(String token){
+        UserModel user = null;
         try{
             String key = CELTICS_TOKEN + ":" + token;
             String value = jedisUtil._get(key);
@@ -136,5 +130,10 @@ public class UserService {
         }
         return user;
     }
+
+    public UserModel getUserFromId(int userId){
+        return ssoService.getUserById(userId);
+    }
+
 
 }

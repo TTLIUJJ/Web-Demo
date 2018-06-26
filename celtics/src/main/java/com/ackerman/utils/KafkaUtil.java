@@ -18,6 +18,9 @@ import java.util.*;
  */
 @Component
 public class KafkaUtil {
+    public static final String KAFKA_TOPIC_REGISTER = "celtics_register";
+    public static final String KAFKA_TOPIC_OTHER = "celtics_another";
+
     private static KafkaProducer<String, String> kafkaProducer;
     private static KafkaConsumer<String, String> kafkaConsumer;
 
@@ -108,42 +111,5 @@ public class KafkaUtil {
         }
     }
 
-    public static void main(String []args){
-        KafkaUtil kafkaUtil = new KafkaUtil();
-
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                HashSet<String> topics = new HashSet<>();
-//                topics.add("firstTopic");
-//                kafkaUtil.subscribe(topics);
-//                kafkaUtil.consume(5000);
-//            }
-//        }).start();
-
-        HashSet<String> topics = new HashSet<>();
-        topics.add("firstTopic");
-        kafkaUtil.subscribe(topics);
-        kafkaUtil.consume(1000);
-
-//        try{
-//            Thread.sleep(1000);
-//            System.in.read();
-//        }catch (Exception  e) {}
-
-//        String topic = "firstTopic";
-//
-//        while (true){
-//            try{
-//                Scanner scanner = new Scanner(System.in);
-//                String msg = scanner.nextLine();
-//                if(msg == null || msg.equals(""))
-//                    break;
-//                kafkaUtil.send(topic, msg);
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }
-//        }
-    }
 
 }

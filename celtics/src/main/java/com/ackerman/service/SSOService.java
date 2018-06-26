@@ -9,9 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.UUID;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * @Author: Ackerman
@@ -20,12 +24,6 @@ import java.util.UUID;
  */
 @Service
 public class SSOService {
-    public static final String GLOBAL_TICKET = "celtics_ticket";        //全局
-    public static final String LOCAL_TICKET = "celtics_ticket_sport";   //局部
-    public static final String CELTICS_TOKEN = "celtics_token";         //免登陆操作
-    public static final int SESSION_TIME = 60 * 60 * 2;                 //会话时间, 单位: s　
-
-
     private static Logger logger = LoggerFactory.getLogger(SSOService.class);
 
     @Autowired
@@ -33,36 +31,6 @@ public class SSOService {
 
     private ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("sso.xml");
     private Common common = (Common) context.getBean("impl");
-
-    public void say(String s){
-        System.out.println(common.say(s));
-    }
-
-
-
-
-    public boolean isLocalSession(String type, String ticket){
-        return common.isLocalSession(type, ticket);
-    }
-
-    public int getUserByTicket(String type, String ticket){
-        return common.getUserFromTicket(type, ticket);
-    }
-
-    public String createTicket(){
-        return UUID.randomUUID().toString().replaceAll("-", "");
-    }
-
-    public void setTicketExpireTime(String type, String ticket, int id, int seconds){
-        common.setTicketExpireTime(type, ticket, id, seconds);
-    }
-
-
-    public void ssoTest(){
-        UserModel userModel = common.getUserByid(2);
-        System.out.println(userModel);
-    }
-
 
 
     /**
@@ -87,56 +55,172 @@ public class SSOService {
      *                              注意: 需要将user保存在localUser中
     * @Date: 上午11:38 18-6-8
     */
-    public UserModel loginViaPassword(HttpServletRequest request, String username, String password){
-        UserModel userModel = common.loginViaPassword(username, password);
-        if(userModel == null || userModel.getId() <= 0) {
-            logger.warn("userModel is null or zero");
+    public UserModel loginViaPassword(HttpServletRequest request, HttpServletResponse response, String username, String password){
+        UserModel user = common.loginViaPassword(username, password);
+        if(user == null || user.getId() <= 0) {
+            logger.warn("user is null or userId <= zero");
         }
         else {
-            createLocalSession(request, LOCAL_TICKET, userModel);
-            createGlobalSession(GLOBAL_TICKET, userModel);
+            String global = createGlobalSession(request, response, user);
+            String local = createLocalSession(request, response, Common.LOCAL_TICKET_NEWS, user);
+            addTicketSet(global, Common.LOCAL_TICKET_NEWS, local);
         }
 
-        return userModel;
+        return user;
     }
 
-    public void createLocalSession(HttpServletRequest request, String type, UserModel userModel){
+    public String createLocalSession(HttpServletRequest request, HttpServletResponse response, String type, UserModel user){
+        String ticket = null;
         try{
-            String ticket = common.creteTicket(type, userModel.getId());
-            HttpSession session = request.getSession();
-            session.setAttribute(type, ticket);
-            session.setMaxInactiveInterval(SESSION_TIME);
+            ticket = common.creteTicket(type, user.getId());
 
-            localInfo.setAttribute("userModel", userModel);
+
+//            HttpSession session = request.getSession();
+//            session.setAttribute(type, ticket);
+//            session.setMaxInactiveInterval(Common.TICKET_TIMEOUT_SECONDS);
+            localInfo.setUser(user);
         }catch (Exception e){
             logger.error("创建全局会话异常", e);
         }
+        return ticket;
     }
 
-    public void createGlobalSession(String type, UserModel userModel){
+    public String createGlobalSession(HttpServletRequest request, HttpServletResponse response, UserModel user){
+        String ticket = null;
         try{
-            String ticket = common.creteTicket(type, userModel.getId());
-            localInfo.setAttribute("global", ticket);
+            ticket = common.creteTicket(Common.GLOBAL_TICKET, user.getId());
+            Cookie cookie = new Cookie(Common.GLOBAL_TICKET, ticket);
+            response.addCookie(cookie);
+
+//            HttpSession session = request.getSession();
+//            session.setAttribute(Common.GLOBAL_TICKET, ticket);
+//            session.setMaxInactiveInterval(Common.TICKET_TIMEOUT_SECONDS);
+            localInfo.setGlobalTicket(ticket);
         }catch (Exception e){
             logger.error("创建全局会话异常", e);
         }
+        return ticket;
     }
 
     /**
     * @Description: 在验证会话中的ticket有效之后,
     * @Date: 下午12:05 18-6-8
     */
-    public UserModel getUserModelByTticket(String type, String ticket){
-        UserModel userModel = null;
+    public UserModel getUserByTicket(String type, String ticket){
+        UserModel user = null;
         try{
-            userModel = common.getUserModelByTicket(type, ticket);
+            user = common.getUserModelByTicket(type, ticket);
         }catch (Exception e){
 
         }
-        return userModel;
+        return user;
     }
 
-    public UserModel getUserModelByToken(String type, String token){
-        return getUserModelByTticket(type, token);
+    public UserModel getUserByToken(String type, String token){
+        return getUserByTicket(type, token);
+    }
+
+
+    /**
+    * @Description: 注册完毕, 相当于登录一边了
+    * @Date: 下午4:37 18-6-17
+    */
+    public UserModel register(HttpServletRequest request, HttpServletResponse response, String username, String password){
+        UserModel user = null;
+        try{
+            int res = common.register(username, password);
+            if(res == 0)
+                return null;
+
+            user = loginViaPassword(request, response, username, password);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+
+    /**
+    * @Description: 免登录函数
+    * @Date: 下午9:17 18-6-17
+    */
+    public void autoLogin(HttpServletResponse response, int id){
+        try {
+            String token = common.createToken(id);
+            Cookie cookie = new Cookie(Common.CELTICS_TOKEN, token);
+            cookie.setPath("/");
+//            cookie.setMaxAge(Common.TOKEN_TIMEOUT_SECONDS);   //单位:s
+            response.addCookie(cookie);
+        }catch (Exception e){
+            logger.error("免登录出错", e);
+        }
+    }
+
+    public void addTicketSet(String global, String localType, String local){
+        try{
+            common.addTicketSet(global, localType, local);
+        }catch (Exception e){
+            logger.error("添加ticket到记录集合失败", e);
+        }
+    }
+
+    /**
+    * @Description: 注销令牌, 没有点击退出登陆, 所有的ticket在一段时间后会被删除
+     *                  但是点击了退出, 全局和局部ticket都会被删除,
+     *                  当然, token也必须一并删除
+    * @Date: 下午9:58 18-6-17
+    */
+    public void logoffTicket(HttpServletRequest request){
+        try{
+            String global = null;
+            String token = null;
+
+            Cookie []cookies = request.getCookies();
+
+            for(Cookie cookie : cookies){
+                String name = cookie.getName();
+                if(name.equals(Common.CELTICS_TOKEN)) {
+                    token = cookie.getValue();
+                    cookie.setMaxAge(0);
+                }
+                else if(name.equals(Common.GLOBAL_TICKET)){
+                    global = cookie.getValue();
+                    cookie.setMaxAge(0);
+                }
+
+            }
+
+            Map<String, String> ticketMap = common.getLocalTickets(global);
+            for(Cookie cookie : cookies){
+                String name = cookie.getName();
+                if(ticketMap.containsKey(name)){
+                    cookie.setMaxAge(0);
+                }
+            }
+
+            common.logoffTicket(global, token);
+            localInfo.removeAll();
+        }catch (Exception e){
+            logger.error("注销登录失败", e);
+        }
+    }
+
+
+    /**
+    * @Description: 一次性ticket的验证
+    * @Date: 下午3:21 18-6-21
+    */
+
+    public boolean verifyOneTimeTicket(String ticket){
+        try{
+            return common.verifyOneTimeTicket(Common.RGISTER_TICKET, ticket);
+        }catch (Exception e){
+            logger.error("邮箱验证失败", e);
+        }
+        return false;
+    }
+
+    public UserModel getUserById(int id){
+        return common.getUserById(id);
     }
 }

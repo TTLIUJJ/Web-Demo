@@ -23,15 +23,32 @@ public class LocalInfo {
         threadLocal.set(info);
     }
 
-    public void setAttribute(String key, Object val){
-        info.put(key, val);
+    public void setUser(UserModel user){
+        info.put("user", user);
     }
 
-    public Object getAttribute(String key){
-        return info.get(key);
+    public UserModel getUser(){
+        return (UserModel) info.get("user");
     }
 
-    public void remove(){
+    public void setGlobalTicket(String ticket){
+        info.put("global", ticket);
+    }
+
+    public String getGlobalTicket(){
+        return (String) info.get("global");
+    }
+
+    public void removeUser(){
+        info.remove("user");
+    }
+
+    public void removeGlobalTicket(){
+        info.remove("global");
+    }
+
+    public void removeAll(){
+        info.clear();
         threadLocal.remove();
     }
 }
