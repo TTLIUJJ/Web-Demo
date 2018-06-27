@@ -61,4 +61,5 @@ public class UserModel implements Serializable{
                 ", salt=" + salt +
                 ", headImageUrl=" + headImageUrl + "]";
     }
+
 }

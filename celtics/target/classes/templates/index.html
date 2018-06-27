@@ -26,7 +26,7 @@
                         </div>
                         <div class="col-md-2">
                             <button class="support" value="${vo.news.id}"><span class="glyphicon glyphicon-thumbs-up"></span></button>
-                            <p class="p" id="likeCnt">$!{vo.likeCount}</p>
+                            <p class="p">$!{vo.likeCount}</p>
                             <button class="oppose" value="${vo.news.id}"><span class="glyphicon glyphicon-thumbs-down"></span></button>
                         </div>
                         <div class="col-md-3">
@@ -66,7 +66,7 @@
                         alert(data.msg);
                         return;
                     }
-                    $("#likeCnt").text(data.msg);
+                    node.text(data.msg);
                 },
                 error: function (data) {
                     alert("error:" + data.msg);
@@ -75,7 +75,7 @@
         });
 
         $(".oppose").click(function () {
-            var node = $(this).next();
+            var node = $(this).prev();
             $.ajax({
                 data:{
                     "newsId": $(this).val(),
@@ -89,7 +89,7 @@
                         alert(data.msg);
                         return;
                     }
-                    $("#likeCnt").text(data.msg);
+                    node.text(data.msg);
                 },
                 error: function (data) {
                     alert("error:" + data.msg);

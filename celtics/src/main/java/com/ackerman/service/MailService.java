@@ -20,9 +20,6 @@ public class MailService {
     private static Logger logger = LoggerFactory.getLogger(MailService.class);
 
     @Autowired
-    private JsonUtil jsonUtil;
-
-    @Autowired
     private KafkaUtil kafkaUtil;
 
     public void sendRegisterMessage(UserModel user){

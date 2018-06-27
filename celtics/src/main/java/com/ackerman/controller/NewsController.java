@@ -91,6 +91,7 @@ public class NewsController {
         try{
             List<ViewObject> vos = new ArrayList<>(limit);
             long len = jedisUtil.llen(JedisUtil.HOT_NEWS_KEY);
+
             for(long i = 0; i < len; ++i){
                 ViewObject vo = new ViewObject();
 
@@ -99,7 +100,6 @@ public class NewsController {
                 vo.set("news", news);
                 vo.set("author", userService.getUserFromId(news.getUserId()));
                 vo.set("index", i+1+offset);
-
                 vo.set("likeCount", newsService.getNewsLikeCount(news.getId()));
 
                 vos.add(vo);

@@ -27,11 +27,15 @@ public interface NewsDao {
     public List<News> getNewsByOffsetAndLimit(@Param("offset") int offset,
                                               @Param("limit") int limit);
 
+    @Select({"SELECT ", SELECT_FIELDS, " FROM ", TABLE, " order by id desc limit #{limitNum}"})
+    public List<News> getLastNews(int limitNum);
 
     @Select({"SELECT comment_count from ", TABLE, " WHERE id = #{newsId}"})
     public int getCommentCount(int newsId);
 
     @Update({"UPDATE ", TABLE, " SET comment_count = comment_count + 1 WHERE id = #{newsId}"})
     public int incrCommentCount(int newsId);
+
+
 
 }

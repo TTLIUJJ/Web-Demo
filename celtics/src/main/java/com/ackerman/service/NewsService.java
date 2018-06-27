@@ -3,15 +3,13 @@ package com.ackerman.service;
 import com.ackerman.UserModel;
 import com.ackerman.dao.NewsDao;
 import com.ackerman.model.News;
-import com.ackerman.utils.Entity;
-import com.ackerman.utils.JedisUtil;
-import com.ackerman.utils.LocalInfo;
-import com.ackerman.utils.MasterUtil;
+import com.ackerman.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -32,10 +30,12 @@ public class NewsService implements InitializingBean{
     private JedisUtil jedisUtil;
 
     @Autowired
-    private NewsDao newsDao;
+    private JedisClusterUtil jedisClusterUtil;
 
     @Autowired
-    private SSOService ssoService;
+    private NewsDao newsDao;
+
+
 
     @Autowired
     private LocalInfo localInfo;
@@ -71,13 +71,13 @@ public class NewsService implements InitializingBean{
     }
 
     /**
-    * @Description: 进程一启动, 先设置hotNews, 便于调试
+    * @Description: 进程一启动, 先设置hotNews
     * @Date: 上午10:59 18-6-17
     */
     public void initHotNews(){
         try {
             jedisUtil.del(JedisUtil.HOT_NEWS_KEY);
-            List<Integer> list = getHotNewsId();
+            List<Integer> list = updateHotNewsId();
             for(int id : list){
                 jedisUtil.rpush(JedisUtil.HOT_NEWS_KEY, String.valueOf(id));
             }
@@ -89,9 +89,10 @@ public class NewsService implements InitializingBean{
     /**
     * @Description: 计算出热门新闻, 这里计算前10000条的新闻, 之后改进的, 可以计算一段时间以内
      *                  返回新闻的id编号, 分值大的放前面
+     *              并且更新到mysql数据库
     * @Date: 上午9:38 18-6-17
     */
-    public List<Integer> getHotNewsId(){
+    public List<Integer> updateHotNewsId(){
 
         //分值从大到小
         PriorityQueue<News> queue = new PriorityQueue<>(new Comparator<News>(){
@@ -103,8 +104,16 @@ public class NewsService implements InitializingBean{
             }
         });
 
-        List<News> newsList = newsDao.getNewsByOffsetAndLimit(0, 10000);
-        for(News news : newsList){
+        //TODO 每次选取一个星期内, 或者最新1000条新闻
+
+        int limitNum = 1000;
+        List<News> lastNews = newsDao.getLastNews(limitNum);
+        for(News news : lastNews){
+            //更新点赞数
+            long likeCount = getNewsLikeCount(news.getId());
+            news.setLikeCount(Integer.valueOf(String.valueOf(likeCount)));
+
+            //更新新闻的分值. 并排序
             caculateScore(news);
             queue.add(news);
         }
@@ -112,20 +121,18 @@ public class NewsService implements InitializingBean{
         ArrayList<Integer> res = new ArrayList<>();
         while(!queue.isEmpty()){
             News news = queue.poll();
-            System.out.println("title:" + news.getTitle() +", score:" + news.getScore());
             res.add(news.getId());
         }
 
         return res;
     }
 
-    //　点赞数, 评论数越多, 创建时间越短, 分值越高
+    //点赞数, 评论数越多, 创建时间越短, 分值越高
     public void caculateScore(News news){
         try{
-            String likeKey = Entity.getNewsAttitudeKey(news.getId(), Entity.LKIE_KEY);
-            long likeScore = jedisUtil.scard(likeKey)*7;
+            long likeScore = getNewsLikeCount(news.getId())*7;
             long commentScore = news.getCommentCount()*11;
-            long createTime = (System.currentTimeMillis() - news.getCreateDate().getTime()) / (1000 * 60 * 10);
+            long createTime = (System.currentTimeMillis() - news.getCreateDate().getTime()) / (1000 * 60);
             createTime = createTime == 0 ? 1 : createTime;
             long score = (likeScore + commentScore) / createTime;
             news.setScore(score);
@@ -145,25 +152,25 @@ public class NewsService implements InitializingBean{
         String dislikeKey = Entity.getNewsAttitudeKey(newsId, Entity.DISLKE_KEY);
 
         if(attitude == 1){
-            if(jedisUtil.sismember(dislikeKey, userId))
-                jedisUtil.srem(dislikeKey, userId);
+            if(jedisClusterUtil._sismember(dislikeKey, userId))
+                jedisClusterUtil._srem(dislikeKey, userId);
 
-            if(jedisUtil.sismember(likeKey, userId))
-                jedisUtil.srem(likeKey, userId);
+            if(jedisClusterUtil._sismember(likeKey, userId))
+                jedisClusterUtil._srem(likeKey, userId);
             else
-                jedisUtil.sadd(likeKey, userId);
+                jedisClusterUtil._sadd(likeKey, userId);
         }
         else if(attitude == -1){
-            if(jedisUtil.sismember(likeKey, userId))
-                jedisUtil.srem(likeKey, userId);
+            if(jedisClusterUtil._sismember(likeKey, userId))
+                jedisClusterUtil._srem(likeKey, userId);
 
-            if(jedisUtil.sismember(dislikeKey, userId))
-                jedisUtil.srem(dislikeKey, userId);
+            if(jedisClusterUtil._sismember(dislikeKey, userId))
+                jedisClusterUtil._srem(dislikeKey, userId);
             else
-                jedisUtil.sadd(dislikeKey, userId);
+                jedisClusterUtil._sadd(dislikeKey, userId);
         }
 
-        return jedisUtil.scard(likeKey) - jedisUtil.scard(dislikeKey);
+        return jedisClusterUtil._scard(likeKey) - jedisClusterUtil._scard(dislikeKey);
     }
 
 
@@ -171,8 +178,11 @@ public class NewsService implements InitializingBean{
         String likeKey = Entity.getNewsAttitudeKey(newsId, Entity.LKIE_KEY);
         String dislikeKey = Entity.getNewsAttitudeKey(newsId, Entity.DISLKE_KEY);
 
-        return jedisUtil.scard(likeKey) - jedisUtil.scard(dislikeKey);
+        return jedisClusterUtil._scard(likeKey) - jedisClusterUtil._scard(dislikeKey);
     }
+
+
+
 
 
     @Override
@@ -180,9 +190,8 @@ public class NewsService implements InitializingBean{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                initHotNews();
-
-                Random random = new Random(47);
+                initHotNews();  //hot-news集合是单机的
+                                //like-key和dislike-key是集群的
                 masterUtil.start();
 
                 while (true){
@@ -199,7 +208,7 @@ public class NewsService implements InitializingBean{
                         String lastPath = masterUtil.getLastMasterNodePath();
                         masterUtil.deleteLastMasterNode(lastPath);
 
-                        List<Integer> list = getHotNewsId();
+                        List<Integer> list = updateHotNewsId();
                         StringBuilder sb = new StringBuilder();
                         for(int i = 0; i < list.size(); ++i){
                             if(i == list.size()-1)
