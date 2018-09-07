@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
 
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @Description:
  * @Date: Created in 下午9:50 18-6-16
  */
-@Service
+@Service(value = "newsService")
 public class NewsService implements InitializingBean{
     private Logger logger = LoggerFactory.getLogger(NewsService.class);
 
@@ -32,10 +33,8 @@ public class NewsService implements InitializingBean{
     @Autowired
     private JedisClusterUtil jedisClusterUtil;
 
-    @Autowired
+    @Autowired(required = true)
     private NewsDao newsDao;
-
-
 
     @Autowired
     private LocalInfo localInfo;
@@ -187,6 +186,8 @@ public class NewsService implements InitializingBean{
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        System.out.println("---------------------hello world---------------------");
+
         new Thread(new Runnable() {
             @Override
             public void run() {

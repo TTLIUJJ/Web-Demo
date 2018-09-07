@@ -7,6 +7,7 @@ import com.ackerman.utils.LocalInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -84,7 +85,7 @@ public class UserService {
                 }
             }
             String key = CELTICS_TOKEN + ":" + token;
-            jedisUtil._del(key);
+            jedisUtil.del(key);
         }catch (Exception e){
             logger.error("logout()", e);
         }
@@ -106,7 +107,7 @@ public class UserService {
         try{
             token = UUID.randomUUID().toString().replace("-", "");
             String key = CELTICS_TOKEN + ":" + token;
-            jedisUtil._setex(key, seconds, String.valueOf(id));
+//            jedisUtil.setex(key, seconds, String.valueOf(id));
         }catch (Exception e){
             logger.error("createCelticsToken()", e);
         }
@@ -115,19 +116,19 @@ public class UserService {
 
     public UserModel parseUserFromToken(String token){
         UserModel user = null;
-        try{
-            String key = CELTICS_TOKEN + ":" + token;
-            String value = jedisUtil._get(key);
-            if(value == null)
-                return null;
-
-            int id = Integer.parseInt(value);
-            user = userDao.getUserById(id);
-
-            return user;
-        }catch (Exception e){
-            logger.error("parseUserFromToken()", e);
-        }
+//        try{
+//            String key = CELTICS_TOKEN + ":" + token;
+//            String value = jedisUtil._get(key);
+//            if(value == null)
+//                return null;
+//
+//            int id = Integer.parseInt(value);
+//            user = userDao.getUserById(id);
+//
+//            return user;
+//        }catch (Exception e){
+//            logger.error("parseUserFromToken()", e);
+//        }
         return user;
     }
 

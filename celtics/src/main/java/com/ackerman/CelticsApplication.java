@@ -1,9 +1,18 @@
 package com.ackerman;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.velocity.VelocityAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
+
+import java.util.LinkedHashMap;
 
 /**
  * @Author: Ackerman
@@ -11,6 +20,8 @@ import org.springframework.boot.context.web.SpringBootServletInitializer;
  * @Date: Created in 下午2:33 18-6-4
  */
 @SpringBootApplication
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class })
+@ComponentScan(basePackages = {"com.ackerman.dao"})
 public class CelticsApplication {
     public static void main(String []args){
         SpringApplication.run(CelticsApplication.class, args);

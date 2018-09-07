@@ -58,6 +58,11 @@ public class NewsController {
     @Autowired
     private JsonUtil jsonUtil;
 
+    @RequestMapping("/error")
+    @ResponseBody
+    public String error() {
+        return "fuck";
+    }
 
     @RequestMapping(path = {"/", "/index" }, method = {RequestMethod.GET, RequestMethod.POST})
     public String index(@RequestParam(value = "offset", defaultValue = "0") int offset,

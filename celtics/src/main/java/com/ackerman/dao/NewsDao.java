@@ -2,6 +2,8 @@ package com.ackerman.dao;
 
 import com.ackerman.model.News;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -11,6 +13,7 @@ import java.util.List;
  * @Date: Created in 下午10:49 18-6-4
  */
 @Mapper
+@Component
 public interface NewsDao {
     public static final String TABLE = "news";
     public static final String INSERT_FIELDS = "type, user_id, like_count, comment_count, title, content, image_link, create_date";
