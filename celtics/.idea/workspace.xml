@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b202fb2a-b97a-49c6-8ee0-de135f255656" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/../1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../a.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../b1.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/celtics_war.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/celtics_war_exploded.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/ackerman/CelticsApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/ackerman/CelticsApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../e2.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../e3.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ee.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../shit.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../单点登录.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../消息队列.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../热点数据的更新.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../秒杀系统.md" beforeDir="false" />
-    </list>
+    <list default="true" id="b202fb2a-b97a-49c6-8ee0-de135f255656" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path="$PROJECT_DIR$/SSO/target/" />
@@ -98,13 +81,13 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="html" value="7" />
-          <entry key="java" value="26" />
+          <entry key="java" value="29" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="HTML" value="7" />
-          <entry key="JAVA" value="26" />
+          <entry key="JAVA" value="29" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
@@ -121,6 +104,15 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/interceptor/SSOInterceptor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="464">
+              <caret line="92" column="39" selection-start-line="92" selection-start-column="27" selection-end-line="92" selection-end-column="39" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/service/QiniuService.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -131,19 +123,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/utils/TestSpringBean.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/service/SSOService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+            <state relative-caret-position="-44">
+              <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/service/SSOService.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/service/UserService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
+            <state relative-caret-position="261">
+              <caret line="35" column="19" selection-start-line="35" selection-start-column="19" selection-end-line="35" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -185,15 +177,6 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/utils/MasterUtil.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="850">
-              <caret line="61" column="22" lean-forward="true" selection-start-line="61" selection-end-line="62" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/utils/LocalInfo.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="150">
@@ -203,10 +186,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/java/com/ackerman/UserModel.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/utils/MasterUtil.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="19" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="19" />
+            <state relative-caret-position="850">
+              <caret line="61" column="22" lean-forward="true" selection-start-line="61" selection-end-line="62" />
             </state>
           </provider>
         </entry>
@@ -570,7 +553,7 @@
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/qudian/ackerman/celtics/celtics/src/main/java/com/ackerman/controller/IndexController.java" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1552225493585" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1552288269346" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -813,6 +796,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23462088" />
       <window_info id="Structure" order="1" weight="0.25" />
@@ -1140,20 +1124,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/interceptor/SSOInterceptor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130">
-          <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/service/UserService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/utils/JedisUtil.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
@@ -1165,13 +1135,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="9" column="17" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/utils/LocalInfo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -1231,10 +1194,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/service/SSOService.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/service/UserService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="35" column="19" selection-start-line="35" selection-start-column="19" selection-end-line="35" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/utils/LocalInfo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/service/SSOService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-44">
           <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ackerman/interceptor/SSOInterceptor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="464">
+          <caret line="92" column="39" selection-start-line="92" selection-start-column="27" selection-end-line="92" selection-end-column="39" />
         </state>
       </provider>
     </entry>
